@@ -2,8 +2,9 @@
 
 namespace AnyB1s\Data\Common\EventSourcing\EventStore;
 
-use JMS\Serializer\SerializerInterface;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 final class EventStore
 {
@@ -13,11 +14,11 @@ final class EventStore
 
     /**
      * EventStore constructor.
-     * @param $storageFacility
-     * @param $eventDispatcher
+     * @param StorageFacility $storageFacility
+     * @param EventDispatcherInterface $eventDispatcher
      * @param SerializerInterface $serializer
      */
-    public function __construct($storageFacility, $eventDispatcher, SerializerInterface $serializer)
+    public function __construct(StorageFacility $storageFacility, EventDispatcherInterface $eventDispatcher, SerializerInterface $serializer)
     {
         $this->storageFacility = $storageFacility;
         $this->eventDispatcher = $eventDispatcher;
@@ -29,13 +30,18 @@ final class EventStore
         foreach ($events as $event) {
             $envelope = $this->wrapInEnvelope($aggregateType, $aggregateId, $event);
             $this->storageFacility->append($envelope);
-            $this->eventDispatcher->dispatch($event);
+
+            $this->eventDispatcher->dispatch(EventStoreEvents::EVENT_APPENDED, new Event\EventAppended($envelope));
         }
     }
 
     public function loadEventsOf(string $aggregateType, string $aggregateId)
     {
-        return [];
+        $events = [];
+        foreach ($this->storageFacility->loadEventsOf($aggregateType, $aggregateId) as $rawEvent) {
+            $events[] = $this->restoreEvent($rawEvent);
+        }
+        return $events;
     }
 
     public function reconstitute(string $aggregateType, string $aggregateId)
