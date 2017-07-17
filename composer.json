@@ -26,7 +26,8 @@
     "preferred-install": "dist",
     "sort-packages": true,
     "optimize-autoloader": true
-  }, "extra": {
+  },
+  "extra": {
     "branch-alias": {
       "dev-master": "0.1.x-dev"
     }
