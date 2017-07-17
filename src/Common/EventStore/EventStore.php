@@ -2,6 +2,9 @@
 
 namespace AnyB1s\Data\Common\EventSourcing\EventStore;
 
+use JMS\Serializer\SerializerInterface;
+use Ramsey\Uuid\Uuid;
+
 final class EventStore
 {
     private $storageFacility;
@@ -12,9 +15,9 @@ final class EventStore
      * EventStore constructor.
      * @param $storageFacility
      * @param $eventDispatcher
-     * @param $serializer
+     * @param SerializerInterface $serializer
      */
-    public function __construct($storageFacility, $eventDispatcher, $serializer)
+    public function __construct($storageFacility, $eventDispatcher, SerializerInterface $serializer)
     {
         $this->storageFacility = $storageFacility;
         $this->eventDispatcher = $eventDispatcher;
@@ -48,9 +51,9 @@ final class EventStore
 
     private function wrapInEnvelope(string $aggregateType, string $aggregateId, $event): EventEnvelope
     {
-        $id = mt_rand(1, 5);
+        $id = (string) Uuid::uuid4();
         $eventType = get_class($event);
-        $payload = [];
+        $payload = $this->extractPayload($event);
         $now = new \DateTimeImmutable();
 
         return new EventEnvelope(
@@ -61,5 +64,19 @@ final class EventStore
             $now,
             $payload
         );
+    }
+
+    private function extractPayload($event): string
+    {
+        return $this->serializer->serialize($event, 'json');
+    }
+
+    /**
+     * @param EventEnvelope $eventEnvelope
+     * @return object Of type $eventEnvelope->eventType()
+     */
+    private function restoreEvent(EventEnvelope $eventEnvelope)
+    {
+        return $this->serializer->deserialize($eventEnvelope->payload(), $eventEnvelope->eventType(), 'json');
     }
 }
