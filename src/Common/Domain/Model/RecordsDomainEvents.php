@@ -2,7 +2,7 @@
 
 namespace AnyB1s\Data\Domain\Model;
 
-interface RecordEvents
+interface RecordsDomainEvents
 {
     /**
      * @return array

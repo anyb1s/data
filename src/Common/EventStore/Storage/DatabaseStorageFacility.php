@@ -5,46 +5,53 @@ namespace AnyB1s\Data\Common\EventSourcing\EventStore\Storage;
 use AnyB1s\Data\Common\EventSourcing\EventStore\EventEnvelope;
 use AnyB1s\Data\Common\EventSourcing\EventStore\StorageFacility;
 use Assert\Assert;
-use Aura\Sql\ExtendedPdoInterface;
+use PDO;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
 final class DatabaseStorageFacility implements StorageFacility
 {
-    /** @var ExtendedPdoInterface $connection */
+    /** @var PDO $connection */
     private $connection;
+    /** @var string */
+    private $table;
 
     /**
      * DatabaseStorageFacility constructor.
-     * @param ExtendedPdoInterface $connection
+     * @param PDO $connection
+     * @param string $table
      */
-    public function __construct(ExtendedPdoInterface $connection)
+    public function __construct(PDO $connection, string $table)
     {
+        $table = (new CamelCaseToSnakeCaseNameConverter())->normalize($table);
+
+        Assert::that($table)
+            ->endsWith('_event_store');
+
         $this->connection = $connection;
+        $this->table = $table;
     }
 
     public function loadEventsOf(string $aggregateType, string $aggregateId): array
     {
-        $table = $this->tableName($aggregateType);
-        
         $statement = $this->connection->prepare(
-            "SELECT `payload` FROM `{$table}` WHERE aggregate_type= ? AND aggregate_id = ?"
+            "SELECT `payload` FROM `{$this->table}` WHERE aggregate_type= ? AND aggregate_id = ? ORDER BY occurred_at"
         );
         $statement->bindValue(1, $aggregateType);
         $statement->bindValue(2, $aggregateId);
 
-        return $statement->fetchAll(\PDO::FETCH_COLUMN);
+        return $statement->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function loadAllEvents(): array
     {
-        return Database::retrieveAll(EventEnvelope::class);
+        return $this->connection
+            ->prepare("SELECT `payload` FROM `{$this->table}`")
+            ->fetchAll(PDO::FETCH_COLUMN);
     }
 
     public function append(EventEnvelope $eventEnvelope): void
     {
-        $table = $this->tableName($eventEnvelope->aggregateType());
-        
-        $statement = $this->connection->prepare("INSERT INTO `{$table}` VALUES (?, ?)");
+        $statement = $this->connection->prepare("INSERT INTO `{$this->table}` VALUES (?, ?)");
 
         $statement->bindValue(1, $eventEnvelope->aggregateType());
         $statement->bindValue(2, $eventEnvelope->aggregateId());
@@ -53,11 +60,6 @@ final class DatabaseStorageFacility implements StorageFacility
 
     public function deleteAll(): void
     {
-        Database::deleteAll(EventEnvelope::class);
-    }
-
-    private function tableName(string $aggregateType) : string
-    {
-        return (new CamelCaseToSnakeCaseNameConverter())->normalize($aggregateType);
+        $this->connection->query("DELETE FROM `{$this->table}`");
     }
 }

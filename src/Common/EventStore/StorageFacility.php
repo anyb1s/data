@@ -8,7 +8,7 @@ interface StorageFacility
 
     public function loadAllEvents(): array;
 
-    public function append(EventEnvelope $eventEnvelope): void;
+    public function append(EventEnvelope $eventEnvelope);
 
-    public function deleteAll(): void;
+    public function deleteAll();
 }

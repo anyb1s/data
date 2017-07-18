@@ -2,17 +2,14 @@
 
 namespace AnyB1s\Data\Common\EventSourcing;
 
+use AnyB1s\Data\Common\Persistence\Entity;
+
 /**
  * Interface EventSourcedAggregate
  * @package AnyB1s\Data\Common\EventSourcing
  */
-interface EventSourcedAggregate
+interface EventSourcedAggregate extends Entity
 {
-    /**
-     * @return string
-     */
-    public function id(): string;
-
     /**
      * @return object[]
      */

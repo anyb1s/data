@@ -13,7 +13,7 @@
   },
   "require": {
     "php": "^7.0",
-    "aura/sql": "^2.5",
+    "ext-pdo": "*",
     "beberlei/assert": "^2.7",
     "ramsey/uuid": "^3.6",
     "symfony/event-dispatcher": "^3.3",
