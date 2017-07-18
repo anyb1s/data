@@ -12,7 +12,7 @@ use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter
  * Class MysqlStorageFacility
  * @package AnyB1s\Data\Common\EventSourcing\EventStore\Storage
  */
-final class MysqlStorageFacility implements StorageFacility
+final class MysqlStorage implements StorageFacility
 {
     /** @var PDO $connection */
     private $connection;
