@@ -8,7 +8,11 @@ use Assert\Assert;
 use PDO;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
-final class DatabaseStorageFacility implements StorageFacility
+/**
+ * Class MysqlStorageFacility
+ * @package AnyB1s\Data\Common\EventSourcing\EventStore\Storage
+ */
+final class MysqlStorageFacility implements StorageFacility
 {
     /** @var PDO $connection */
     private $connection;
@@ -31,6 +35,11 @@ final class DatabaseStorageFacility implements StorageFacility
         $this->table = $table;
     }
 
+    /**
+     * @param string $aggregateType
+     * @param string $aggregateId
+     * @return array
+     */
     public function loadEventsOf(string $aggregateType, string $aggregateId): array
     {
         $statement = $this->connection->prepare(
@@ -42,6 +51,9 @@ final class DatabaseStorageFacility implements StorageFacility
         return $statement->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    /**
+     * @return array
+     */
     public function loadAllEvents(): array
     {
         return $this->connection
@@ -49,6 +61,9 @@ final class DatabaseStorageFacility implements StorageFacility
             ->fetchAll(PDO::FETCH_COLUMN);
     }
 
+    /**
+     * @param EventEnvelope $eventEnvelope
+     */
     public function append(EventEnvelope $eventEnvelope): void
     {
         $statement = $this->connection->prepare("INSERT INTO `{$this->table}` VALUES (?, ?)");
@@ -58,6 +73,9 @@ final class DatabaseStorageFacility implements StorageFacility
         $statement->execute();
     }
 
+    /**
+     *
+     */
     public function deleteAll(): void
     {
         $this->connection->query("DELETE FROM `{$this->table}`");
