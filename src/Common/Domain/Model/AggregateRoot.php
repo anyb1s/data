@@ -2,6 +2,8 @@
 
 namespace AnyB1s\Data\Domain\Model;
 
+use Assert\Assert;
+
 /**
  * Aggregate roots can use this trait
  */
@@ -16,7 +18,9 @@ trait AggregateRoot
      */
     protected function recordThat($event)
     {
-        Assertion::isObject($event, 'An event should be an object');
+        Assert::that($event)
+            ->isObject($event, 'An event should be an object');
+
         $this->events[] = $event;
     }
 
