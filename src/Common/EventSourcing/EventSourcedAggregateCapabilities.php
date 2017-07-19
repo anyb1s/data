@@ -2,7 +2,7 @@
 
 namespace AnyB1s\Data\Common\EventSourcing;
 
-use Assert\Assert;
+use Assert\Assertion;
 
 /**
  * Class EventSourcedAggregateCapabilities
@@ -44,7 +44,7 @@ trait EventSourcedAggregateCapabilities
     {
         $id = is_string($this->id) ? $this->id : (string)$this->id;
 
-        Assert::that($id)->notEmpty($id, 'Aggregate ID is empty');
+        Assertion::notEmpty($id, 'Aggregate ID is empty');
 
         return $id;
     }
@@ -68,8 +68,7 @@ trait EventSourcedAggregateCapabilities
      */
     private function recordThat($event)
     {
-        Assert::that($event)
-            ->isObject($event, 'A domain event should be an object');
+        Assertion::isObject($event, 'A domain event should be an object');
 
         $this->recordedEvents[] = $event;
         $this->apply($event);
@@ -80,15 +79,14 @@ trait EventSourcedAggregateCapabilities
      */
     private function apply($event)
     {
-        Assert::that($event)
-            ->isObject($event, 'A domain event should be an object');
+        Assertion::isObject($event, 'A domain event should be an object');
 
         $parts = explode('\\', get_class($event));
         $eventName = end($parts);
         $name = 'when'.$eventName;
         $applyFunction = [$this, $name];
 
-        Assert::that($applyFunction)->isCallable($name . '() should be callable');
+        Assertion::isCallable($applyFunction, $name . '() should be callable');
 
         call_user_func($applyFunction, $event);
     }

@@ -4,6 +4,7 @@ namespace AnyB1s\Data\Common\EventSourcing\EventStore\Storage;
 
 use AnyB1s\Data\Common\EventSourcing\EventStore\EventEnvelope;
 use AnyB1s\Data\Common\EventSourcing\EventStore\StorageFacility;
+use Assert\Assert;
 use Illuminate\Database\Connection;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
