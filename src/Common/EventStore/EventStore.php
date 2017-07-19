@@ -2,8 +2,8 @@
 
 namespace AnyB1s\Data\Common\EventSourcing\EventStore;
 
+use AnyB1s\Data\Common\EventDispatcher\EventDispatcher;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 final class EventStore
@@ -15,10 +15,10 @@ final class EventStore
     /**
      * EventStore constructor.
      * @param StorageFacility $storageFacility
-     * @param EventDispatcherInterface $eventDispatcher
+     * @param EventDispatcher $eventDispatcher
      * @param SerializerInterface $serializer
      */
-    public function __construct(StorageFacility $storageFacility, EventDispatcherInterface $eventDispatcher, SerializerInterface $serializer)
+    public function __construct(StorageFacility $storageFacility, EventDispatcher $eventDispatcher, SerializerInterface $serializer)
     {
         $this->storageFacility = $storageFacility;
         $this->eventDispatcher = $eventDispatcher;
