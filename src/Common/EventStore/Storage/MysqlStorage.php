@@ -4,7 +4,7 @@ namespace AnyB1s\Data\Common\EventSourcing\EventStore\Storage;
 
 use AnyB1s\Data\Common\EventSourcing\EventStore\EventEnvelope;
 use AnyB1s\Data\Common\EventSourcing\EventStore\StorageFacility;
-use Assert\Assert;
+use Assert\Assertion;
 use PDO;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
 
@@ -28,8 +28,7 @@ final class MysqlStorage implements StorageFacility
     {
         $table = (new CamelCaseToSnakeCaseNameConverter())->normalize($table);
 
-        Assert::that($table)
-            ->endsWith('_event_store');
+        Assertion::endsWith($table, '_event_store');
 
         $this->connection = $connection;
         $this->table = $table;

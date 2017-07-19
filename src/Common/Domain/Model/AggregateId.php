@@ -2,7 +2,7 @@
 
 namespace AnyB1s\Data\Domain\Model;
 
-use Assert\Assert;
+use Assert\Assertion;
 
 trait AggregateId
 {
@@ -21,9 +21,8 @@ trait AggregateId
      */
     public static function fromString(string $id)
     {
-        Assert::that($id)
-            ->notEmpty()
-            ->uuid();
+        Assertion::notEmpty($id);
+        Assertion::uuid($id);
 
         $aggregateId = new static();
         $aggregateId->id = $id;
