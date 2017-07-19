@@ -4,7 +4,7 @@ namespace AnyB1s\Data\Common\EventSourcing\Aggregate\Repository;
 
 use AnyB1s\Data\Common\EventSourcing\EventSourcedAggregate;
 use AnyB1s\Data\Common\EventSourcing\EventStore\EventStore;
-use Assert\Assert;
+use Assert\Assertion;
 
 final class EventSourcedAggregateRepository
 {
@@ -21,8 +21,7 @@ final class EventSourcedAggregateRepository
 
     public function save(EventSourcedAggregate $aggregate)
     {
-        Assert::that($aggregate)
-            ->same(get_class($aggregate), $this->aggregateType);
+        Assertion::same(get_class($aggregate), $this->aggregateType);
 
         $this->eventStore->append($this->aggregateType, $aggregate->id(), $aggregate->popRecordedEvents());
     }
