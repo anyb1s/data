@@ -86,7 +86,12 @@ trait EventSourcedAggregateCapabilities
         $name = 'when'.$eventName;
         $applyFunction = [$this, $name];
 
-        Assertion::isCallable($applyFunction, $name . '() should be callable');
+        Assertion::true(is_callable($applyFunction), sprintf(
+            'You first need to define the following method in class %s: private function %s(%s $event) { }',
+            get_class($this),
+            $name,
+            get_class($event)
+        ));
 
         call_user_func($applyFunction, $event);
     }
