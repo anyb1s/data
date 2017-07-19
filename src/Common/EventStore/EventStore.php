@@ -31,7 +31,7 @@ final class EventStore
             $envelope = $this->wrapInEnvelope($aggregateType, $aggregateId, $event);
             $this->storageFacility->append($envelope);
 
-            $this->eventDispatcher->dispatch(EventStoreEvents::EVENT_APPENDED, new Event\EventAppended($envelope));
+            $this->eventDispatcher->dispatch($event);
         }
     }
 
