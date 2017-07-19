@@ -52,7 +52,7 @@ class LaravelMysqlStorage implements StorageFacility
             ->all();
     }
 
-    public function append(EventEnvelope $eventEnvelope): void
+    public function append(EventEnvelope $eventEnvelope)
     {
         $this->connection
             ->table($this->table)
@@ -66,7 +66,7 @@ class LaravelMysqlStorage implements StorageFacility
             ]);
     }
 
-    public function deleteAll(): void
+    public function deleteAll()
     {
         $this->connection->table($this->table)->delete();
     }

@@ -4,7 +4,7 @@ namespace AnyB1s\Data\Common\EventSourcing\EventStore;
 
 final class EventEnvelope
 {
-    const DATE_TIME_FORMAT = \DateTime::ATOM;
+    const DATE_TIME_FORMAT = 'Y-m-d H:i:s';
 
     /** @var string */
     private $eventId;

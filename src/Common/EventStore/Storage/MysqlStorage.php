@@ -63,7 +63,7 @@ final class MysqlStorage implements StorageFacility
     /**
      * @param EventEnvelope $eventEnvelope
      */
-    public function append(EventEnvelope $eventEnvelope): void
+    public function append(EventEnvelope $eventEnvelope)
     {
         $statement = $this->connection->prepare("INSERT INTO `{$this->table}` VALUES (?, ?)");
 
@@ -75,7 +75,7 @@ final class MysqlStorage implements StorageFacility
     /**
      *
      */
-    public function deleteAll(): void
+    public function deleteAll()
     {
         $this->connection->query("DELETE FROM `{$this->table}`");
     }
