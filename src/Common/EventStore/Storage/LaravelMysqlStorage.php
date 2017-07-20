@@ -49,7 +49,7 @@ class LaravelMysqlStorage implements StorageFacility
             ->select(['event_type', 'payload'])
             ->get()
             ->map(function($row) {
-                return array_values($row);
+                return array_values((array) $row);
             })
             ->all();
     }
