@@ -46,9 +46,11 @@ class LaravelMysqlStorage implements StorageFacility
     {
         return $this->connection
             ->table($this->table)
-            ->select(['payload'])
+            ->select(['event_type', 'payload'])
             ->get()
-            ->pluck('payload')
+            ->map(function($row) {
+                return array_values($row);
+            })
             ->all();
     }
 

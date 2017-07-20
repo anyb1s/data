@@ -38,8 +38,8 @@ final class EventStore
     public function loadEventsOf(string $aggregateType, string $aggregateId)
     {
         $events = [];
-        foreach ($this->storageFacility->loadEventsOf($aggregateType, $aggregateId) as $rawEvent) {
-            $events[] = $this->restoreEvent($rawEvent);
+        foreach ($this->storageFacility->loadEventsOf($aggregateType, $aggregateId) as list($eventType, $rawEvent)) {
+            $events[] = $this->restoreEvent($eventType, $rawEvent);
         }
         return $events;
     }
@@ -78,11 +78,12 @@ final class EventStore
     }
 
     /**
-     * @param EventEnvelope $eventEnvelope
-     * @return object Of type $eventEnvelope->eventType()
+     * @param string $eventType
+     * @param string $payload
+     * @return object
      */
-    private function restoreEvent(EventEnvelope $eventEnvelope)
+    private function restoreEvent(string $eventType, string $payload)
     {
-        return $this->serializer->deserialize($eventEnvelope->payload(), $eventEnvelope->eventType(), 'json');
+        return $this->serializer->deserialize($payload, $eventType, 'json');
     }
 }

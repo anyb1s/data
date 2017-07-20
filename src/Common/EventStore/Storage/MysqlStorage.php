@@ -42,12 +42,14 @@ final class MysqlStorage implements StorageFacility
     public function loadEventsOf(string $aggregateType, string $aggregateId): array
     {
         $statement = $this->connection->prepare(
-            "SELECT `payload` FROM `{$this->table}` WHERE aggregate_type= ? AND aggregate_id = ? ORDER BY occurred_at"
+            "SELECT `event_type`, `payload`FROM `{$this->table}` WHERE aggregate_type= ? AND aggregate_id = ? ORDER BY occurred_at"
         );
         $statement->bindValue(1, $aggregateType);
         $statement->bindValue(2, $aggregateId);
 
-        return $statement->fetchAll(PDO::FETCH_COLUMN);
+        return array_map(function ($row) {
+            return array_values($row);
+        }, $statement->fetchAll(PDO::FETCH_COLUMN));
     }
 
     /**
