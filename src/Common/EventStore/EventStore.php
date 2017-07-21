@@ -3,8 +3,8 @@
 namespace AnyB1s\Data\Common\EventSourcing\EventStore;
 
 use AnyB1s\Data\Common\EventDispatcher\EventDispatcher;
+use JMS\Serializer\SerializerInterface;
 use Ramsey\Uuid\Uuid;
-use Symfony\Component\Serializer\SerializerInterface;
 
 final class EventStore
 {
