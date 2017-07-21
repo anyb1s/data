@@ -3,7 +3,7 @@
 namespace AnyB1s\Data\Common\EventSourcing\EventStore;
 
 use AnyB1s\Data\Common\EventDispatcher\EventDispatcher;
-use JMS\Serializer\SerializerInterface;
+use NaiveSerializer\JsonSerializer;
 use Ramsey\Uuid\Uuid;
 
 final class EventStore
@@ -16,9 +16,9 @@ final class EventStore
      * EventStore constructor.
      * @param StorageFacility $storageFacility
      * @param EventDispatcher $eventDispatcher
-     * @param SerializerInterface $serializer
+     * @param JsonSerializer $serializer
      */
-    public function __construct(StorageFacility $storageFacility, EventDispatcher $eventDispatcher, SerializerInterface $serializer)
+    public function __construct(StorageFacility $storageFacility, EventDispatcher $eventDispatcher, JsonSerializer $serializer)
     {
         $this->storageFacility = $storageFacility;
         $this->eventDispatcher = $eventDispatcher;
@@ -74,7 +74,7 @@ final class EventStore
 
     private function extractPayload($event): string
     {
-        return $this->serializer->serialize($event, 'json');
+        return $this->serializer->serialize($event);
     }
 
     /**
@@ -84,6 +84,6 @@ final class EventStore
      */
     private function restoreEvent(string $eventType, string $payload)
     {
-        return $this->serializer->deserialize($payload, $eventType, 'json');
+        return $this->serializer->deserialize($payload, $eventType);
     }
 }
