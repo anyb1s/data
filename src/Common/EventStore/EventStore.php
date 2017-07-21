@@ -84,6 +84,6 @@ final class EventStore
      */
     private function restoreEvent(string $eventType, string $payload)
     {
-        return $this->serializer->deserialize($payload, $eventType);
+        return $this->serializer->deserialize($eventType, $payload);
     }
 }
