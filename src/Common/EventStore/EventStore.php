@@ -3,7 +3,7 @@
 namespace AnyB1s\Data\Common\EventSourcing\EventStore;
 
 use AnyB1s\Data\Common\EventDispatcher\EventDispatcher;
-use NaiveSerializer\JsonSerializer;
+use NilPortugues\Serializer\Serializer;
 use Ramsey\Uuid\Uuid;
 
 final class EventStore
@@ -16,9 +16,9 @@ final class EventStore
      * EventStore constructor.
      * @param StorageFacility $storageFacility
      * @param EventDispatcher $eventDispatcher
-     * @param JsonSerializer $serializer
+     * @param Serializer $serializer
      */
-    public function __construct(StorageFacility $storageFacility, EventDispatcher $eventDispatcher, JsonSerializer $serializer)
+    public function __construct(StorageFacility $storageFacility, EventDispatcher $eventDispatcher, Serializer $serializer)
     {
         $this->storageFacility = $storageFacility;
         $this->eventDispatcher = $eventDispatcher;
@@ -38,8 +38,8 @@ final class EventStore
     public function loadEventsOf(string $aggregateType, string $aggregateId)
     {
         $events = [];
-        foreach ($this->storageFacility->loadEventsOf($aggregateType, $aggregateId) as list($eventType, $rawEvent)) {
-            $events[] = $this->restoreEvent($eventType, $rawEvent);
+        foreach ($this->storageFacility->loadEventsOf($aggregateType, $aggregateId) as $rawEvent) {
+            $events[] = $this->restoreEvent($rawEvent);
         }
         return $events;
     }
@@ -82,8 +82,8 @@ final class EventStore
      * @param string $payload
      * @return object
      */
-    private function restoreEvent(string $eventType, string $payload)
+    private function restoreEvent(string $payload)
     {
-        return $this->serializer->deserialize($eventType, $payload);
+        return $this->serializer->unserialize($payload);
     }
 }

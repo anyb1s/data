@@ -34,13 +34,11 @@ class LaravelMysqlStorage implements StorageFacility
     {
         return $this->connection
             ->table($this->table)
-            ->select(['event_type', 'payload'])
+            ->select(['payload'])
             ->where('aggregate_type', $aggregateType)
             ->where('aggregate_id', $aggregateId)
             ->get()
-            ->map(function($row) {
-                return array_values((array) $row);
-            })
+            ->pluck('payload')
             ->all();
     }
 
@@ -48,11 +46,9 @@ class LaravelMysqlStorage implements StorageFacility
     {
         return $this->connection
             ->table($this->table)
-            ->select(['event_type', 'payload'])
+            ->select(['payload'])
             ->get()
-            ->map(function($row) {
-                return array_values((array) $row);
-            })
+            ->pluck('payload')
             ->all();
     }
 
