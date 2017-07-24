@@ -37,6 +37,7 @@ class LaravelMysqlStorage implements StorageFacility
             ->select(['payload'])
             ->where('aggregate_type', $aggregateType)
             ->where('aggregate_id', $aggregateId)
+            ->orderBy('occurred_at', 'ASC')
             ->get()
             ->pluck('payload')
             ->all();
